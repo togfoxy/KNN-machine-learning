@@ -51,24 +51,45 @@ function rotate_180(m)
    return rotate_CCW_90(rotate_CCW_90(m))
 end
 
-function getDistance(x1, y1, x2, y2)
+function getDistance2(x1, y1, x2, y2)
 	-- this is real distance in pixels
 	-- receives two coordinate pairs (not vectors)
 	-- returns a single number
 	-- Euclidean distance
 
 	if (x1 == nil) or (y1 == nil) or (x2 == nil) or (y2 == nil) then return 0 end
-
-    local horizontal_distance = x1 - x2
-    local vertical_distance = y1 - y2
-    --Both of these work
-    local a = horizontal_distance * horizontal_distance
-    local b = vertical_distance ^2
-
-    local c = a + b
-    local distance = math.sqrt(c)
-    return distance
+	return math.sqrt((x1-x2)^2 + (y1-y2)^2)
 end
+
+function getDistance3(x1, y1, z1, x2, y2, z2)
+	-- same as getDistance2 but with 3 data points
+	return math.sqrt((x1-x2)^2 + (y1-y2)^2 + (z1 - z2)^2)
+end
+
+function getDistanceV(inputset, datapoint)
+	-- same as getDistance2 but with a variable number of arguments reflecting 2 datapoints on multiple axis (e.g. x,y,z and q,w,e)
+	-- NOTE: multiple axis does not mean multiple datapoints! There are still only two datapoints.
+	-- inputset eg {x,y,z}
+	-- datapoint eg {q,w,e}
+	
+	local numaxis = #inputset
+	
+	-- split the args into each of the axis, remembering there are only two datapoints express across multiple axis
+	for i = 1, numaxis do
+		local var1 = select(i, ...)
+		local var2 = select(i + numaxis, ...)
+		table.insert(axis[i], (var1 - var2)^2
+	end
+	
+	-- sum all the axis and then root it
+	local total = 0
+	for i = 1, #axis do
+		total = total + axis[i]
+	end
+	return math.sqrt(total)
+end
+
+
 function SubtractVectors(x1,y1,x2,y2)
 	-- subtracts vector2 from vector1 i.e. v1 - v2
 	-- returns a vector (an x/y pair)
