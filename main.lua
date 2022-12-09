@@ -103,9 +103,10 @@ for i = 1, #dataset do
 		local predictor = dataset[i][j]
 		if colmin[j] == nil then colmin[j] = predictor end
 		if colmax[j] == nil then colmax[j] = predictor end
-			
+
 		if predictor > colmax[j] then colmax[j] = predictor end
 		if predictor < colmin[j] then colmin[j] = predictor end
+	end
 end
 
 -- normalise the dataset
@@ -125,50 +126,42 @@ end
 -- compute distance between input and every dataset item
 for i = 1, #dataset do
 	local dist = cf.getDistanceV(inputset, dataset[i])
-	dataset[i][distcolumn] = dist		-- store the distance in the last column
+	dataset[i][distcolumn] = cf.round(dist, 2)		-- store the distance in the last column
 end
 
 -- sort the table based on the last column (distance)
 table.sort(dataset, function(k1, k2) return k1[distcolumn] < k2[distcolumn] end)
 
+print(inspect(dataset))
+
 -- can now determine result
 result = {}
 -- add up the number of occurances in the top k data items
 for i = 1, k do
-	local label = dataset[k][labelcolumn]
+	local label = dataset[i][labelcolumn]
 	if result[label] == nil then result[label] = 0 end		-- initial result
 	result[label] = result[label] + 1
 end
 
+print("*********")
+print(inspect(result))
+
 -- determine which label got the most 'hits'
-table.sort(result, function(a, b) return a[1] > b[1] end)
+table.sort(result, function(a, b) return a[1] < b[1] end)
+
+print("*********")
+print(inspect(result))
 
 -- here is the prediction
 print("************")
-print("Prediction"
-print(result[1])
+local maxlabelcount = 0
+local maxlabelname = ""
+print("Prediction")
+for k, v in pairs(result) do
+	if v > maxlabelcount then
+		maxlabelcount = v
+		maxlabelname = k
+	end
+end
+print(maxlabelname, maxlabelcount)
 print("************")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

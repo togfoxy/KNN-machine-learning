@@ -71,16 +71,15 @@ function getDistanceV(inputset, datapoint)
 	-- NOTE: multiple axis does not mean multiple datapoints! There are still only two datapoints.
 	-- inputset eg {x,y,z}
 	-- datapoint eg {q,w,e}
-	
+
 	local numaxis = #inputset
-	
-	-- split the args into each of the axis, remembering there are only two datapoints express across multiple axis
+
+	-- split the args into each of the axis, remembering there are only two datapoints expressed across multiple axis
+	local axis = {}
 	for i = 1, numaxis do
-		local var1 = select(i, ...)
-		local var2 = select(i + numaxis, ...)
-		table.insert(axis[i], (var1 - var2)^2
+		axis[i] = (inputset[1] - datapoint[1])^2
 	end
-	
+
 	-- sum all the axis and then root it
 	local total = 0
 	for i = 1, #axis do
