@@ -27,5 +27,6 @@ Credits
 -------
 wolfoops, zorg, Jasoco
 
-MIT licence
 Contact me for bugs or defects or suggestions for improvements
+
+MIT licence
