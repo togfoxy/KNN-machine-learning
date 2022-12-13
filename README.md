@@ -23,5 +23,9 @@ The KNN function returns two variables:
 
 - the count or number of instances of that classifier was associated with the input set
 
+Credits
+-------
+wolfoops, zorg, Jasoco
+
 MIT licence
 Contact me for bugs or defects or suggestions for improvements
