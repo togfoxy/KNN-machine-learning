@@ -130,7 +130,6 @@ function knn.getPrediction(inputset, dataset, kvalue)
     -- if numofpredictors = x then the input needs to have x features/predictors
     for j = 1, numofpredictors do
     	inputset[j] = round((inputset[j] - colmin[j]) / (colmax[j] - colmin[j]), 2)
-    	print(inputset[j])
     end
 
     -- compute distance between input and every dataset item
