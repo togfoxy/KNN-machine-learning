@@ -21,7 +21,7 @@ The KNN function returns two variables:
 
 - the classifier/label that has the strongest association with the input set
 
-- the count or number of instances of that classifier was associated with the input set
+- the count or number of instances of that classifier was associated with the input set. This is essentially the level of confidence in the prediction.
 
 Credits
 -------
