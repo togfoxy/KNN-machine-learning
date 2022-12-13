@@ -2,10 +2,14 @@ knn = {}
 
 local k = 3     -- default value
 
-function round(num, idp)
-	--Input: number to round; decimal places required
-	assert(num ~= nil, "Can't ROUND a nil value")
-	return tonumber(string.format("%." .. (idp or 0) .. "f", num))
+function round(val, decimal)
+	-- rounding function provided by zorg and Jasoco
+	if not val then return 0 end
+	if (decimal) then
+		return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
+	else
+		return math.floor(val+0.5)
+	end
 end
 
 function getDistanceV(inputset, datapoint)
@@ -17,16 +21,14 @@ function getDistanceV(inputset, datapoint)
 	local numaxis = #inputset
 
 	-- split the args into each of the axis, remembering there are only two datapoints expressed across multiple axis
+	-- sum the axis and then square those values, keep a sum of those values as we go
 	local axis = {}
-	for i = 1, numaxis do
-		axis[i] = (inputset[1] - datapoint[1])^2
-	end
-
-	-- sum all the axis and then root it
 	local total = 0
-	for i = 1, #axis do
+	for i = 1, numaxis do
+		axis[i] = (inputset[i] - datapoint[i])^2
 		total = total + axis[i]
 	end
+	-- finally get the square root of that sum
 	return math.sqrt(total)
 end
 
@@ -126,24 +128,19 @@ function knn.getPrediction(inputset, dataset, kvalue)
 
     -- normalise the input
     -- if numofpredictors = x then the input needs to have x features/predictors
-    -- print("Normalised input:")
     for j = 1, numofpredictors do
     	inputset[j] = round((inputset[j] - colmin[j]) / (colmax[j] - colmin[j]), 2)
-    	-- print(inputset[j])
+    	print(inputset[j])
     end
 
     -- compute distance between input and every dataset item
     for i = 1, #dataset do
     	local dist = getDistanceV(inputset, dataset[i])
     	dataset[i][distcolumn] = round(dist, 2)		-- store the distance in the last column
-    -- print(dist)
     end
 
     -- sort the table based on the last column (distance)
     table.sort(dataset, function(k1, k2) return k1[distcolumn] < k2[distcolumn] end)
-
-    -- print("Sorted dataset with distance")
-    -- print(inspect(dataset))
 
     -- can now determine result
     result = {}
@@ -154,30 +151,20 @@ function knn.getPrediction(inputset, dataset, kvalue)
     	result[label] = result[label] + 1
     end
 
-    -- print("*********")
-    -- print(inspect(result))
-
     -- determine which label got the most 'hits'
     table.sort(result, function(a, b) return a[1] < b[1] end)
 
-    -- print("*********")
-    -- print(inspect(result))
-
     -- here is the prediction
-    -- print("************")
-    local maxlabelcount = 0
+    local incidences = 0
     local maxlabelname = ""
-    -- print("Prediction")
     for k, v in pairs(result) do
-    	if v > maxlabelcount then
-    		maxlabelcount = v
+    	if v > incidences then
+    		incidences = v
     		maxlabelname = k
     	end
     end
-    -- print(maxlabelname, maxlabelcount)
-    -- print("************")
 
-    return maxlabelname, maxlabelcount
+    return maxlabelname, incidences
 
 end
 
